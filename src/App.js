@@ -1,10 +1,10 @@
-// import "./globals.css";
 import "./index.css";
+import React, { useState, useEffect, useRef } from "react";
+
 export default function App() {
   return (
     <div className="App">
       <Header />
-
       <TimerBoxWithTaskBox />
       <Footer />
     </div>
@@ -16,7 +16,7 @@ function Header() {
     <header>
       <div className="header">
         <div className="logo">📅</div>
-        <h1 className="title">My App</h1>
+        <h1 className="title">The Time</h1>
         <p className="subtitle">Your daily companion for productivity</p>
         <div>
           <span>
@@ -29,6 +29,97 @@ function Header() {
 }
 
 function TimerBox() {
+  const [isRunning, setIsRunning] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const intervalIdRef = useRef(null);
+  const startTimerRef = useRef(0);
+  const [goalTime, setGoalTime] = useState(() => 2 * 60 * 60 * 1000);
+
+  const progressPercrntage =
+    goalTime > 0 ? Math.min((elapsedTime / goalTime) * 100, 100) : 0;
+
+  function getProgressMessage(progressPercrntage) {
+    if (progressPercrntage >= 100) {
+      return "Completed";
+    } else if (progressPercrntage >= 50) {
+      return "Halfway";
+    } else if (progressPercrntage >= 10) {
+      return "Started";
+    } else {
+      return "Beginning...";
+    }
+  }
+  useEffect(() => {
+    if (isRunning) {
+      intervalIdRef.current = setInterval(() => {
+        setElapsedTime(Date.now() - startTimerRef.current);
+      }, 10);
+    }
+    return () => clearInterval(intervalIdRef.current);
+  }, [isRunning]);
+
+  function startTimer() {
+    setIsRunning(true);
+    startTimerRef.current = Date.now() - elapsedTime;
+    console.log(startTimerRef.current);
+  }
+
+  function stopTimer() {
+    setIsRunning(false);
+  }
+
+  function toggleTimer() {
+    if (isRunning) {
+      stopTimer();
+    } else {
+      startTimer();
+    }
+  }
+
+  function resetTimer() {
+    setElapsedTime(0);
+    setIsRunning(false);
+    setGoalTime(2 * 60 * 60 * 1000);
+  }
+
+  function setGoalFromUser() {
+    const input = prompt("Enter your goal time in minutes:");
+
+    if (input !== null && !isNaN(input)) {
+      const minutes = parseInt(input);
+      const newGoalTime = minutes * 60 * 1000;
+      setGoalTime(newGoalTime);
+      alert(`Goal set to ${minutes} minutes (${formatGoalTime(newGoalTime)})`);
+    }
+  }
+  function formatGoalTime(ms) {
+    if (!ms || isNaN(ms)) return "00:00:00";
+    const hours = String(Math.floor(ms / (1000 * 60 * 60))).padStart(2, 0);
+    const minutes = String(Math.floor((ms / (1000 * 60)) % 60)).padStart(2, 0);
+    const seconds = String(Math.floor((ms / 1000) % 60)).padStart(2, 0);
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  function formatTime() {
+    let hours = Math.floor(elapsedTime / (1000 * 60 * 60));
+    let minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+    let seconds = Math.floor((elapsedTime / 1000) % 60);
+
+    hours = String(hours).padStart(2, 0);
+    minutes = String(minutes).padStart(2, 0);
+    seconds = String(seconds).padStart(2, 0);
+
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  useEffect(() => {
+    if (goalTime && elapsedTime >= goalTime) {
+      alert("🎉 Congratulations! Goal complete.");
+      setElapsedTime(0);
+      setIsRunning(false);
+    }
+  }, [elapsedTime, goalTime]);
+
   return (
     <div className="Timer-box">
       <div className="Timer-header">
@@ -42,35 +133,50 @@ function TimerBox() {
         <div className="Timer-clock">
           <div className="Timer-clock-inner">
             <div>
-              <p className="timer">00:00:00</p>
+              <p className="timer">{formatTime()}</p>
               <div className="Timer-percentage">
-                <p>%10 Complete</p>
+                <p>
+                  %{Math.floor(progressPercrntage)}{" "}
+                  {getProgressMessage(progressPercrntage)}
+                </p>
               </div>
-              <div className="goal">
-                🎯<span>Goal:02:00:00</span>
+              <div onClick={setGoalFromUser} className="goal">
+                🎯
+                <span>
+                  Goal: {goalTime ? formatGoalTime(goalTime) : "Defoult"}
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        <din className="Timer-stats">
-          <div className="stat">
-            <div className="value">0</div>
+        <div className="Timer-stats">
+          <div className="disply-minutes-box">
+            <div className="value">{formatTime().split(":")[1]}</div>
             <div className="label">Minutes</div>
           </div>
-          <div className="stat">
-            <div className="value">0%</div>
+          <div className="disply-Progress-box">
+            <div className="value">{Math.floor(progressPercrntage)}%</div>
             <div className="label"> Progress</div>
           </div>
-          <div className="percentage-label"></div>
+          <div
+            className="percentage-label"
+            style={{ width: `${Math.floor(progressPercrntage)}%` }}
+          ></div>
           <div className="stat-full-row">
             <span className="session-title">Session Progress</span>
-            <span className="session-time">00:00:00 / 02:00:00</span>
+            <span className="session-time">
+              {formatTime()} / {goalTime ? formatGoalTime(goalTime) : "Defoult"}
+            </span>
           </div>
-        </din>
+        </div>
         <div className="button-group">
-          <button className="start-button">start</button>
-          <button className="reset-button">reset</button>
+          <button onClick={toggleTimer} className="start-button">
+            {isRunning ? "⏸ Stop" : "▶ Start Coding"}
+          </button>
+          <button onClick={resetTimer} className="reset-button">
+            {`Reset`}
+          </button>
         </div>
       </div>
       <div className="full-Timer-stats">
@@ -203,14 +309,15 @@ function TaskBox() {
       </div>
       <div className="task-list">
         <label className="task-label">Add new task</label>
-        <div className="add-task">
+        <form className="add-task">
           <input
             type="text"
             className="task-input"
             placeholder="Enter task name"
           />
           <button className="add-task-button">➕</button>
-        </div>
+        </form>
+        <ul className="tack-list"></ul>
       </div>
     </div>
   );
