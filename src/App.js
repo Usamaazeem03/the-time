@@ -99,6 +99,20 @@ function TimerBox() {
     const seconds = String(Math.floor((ms / 1000) % 60)).padStart(2, 0);
     return `${hours}:${minutes}:${seconds}`;
   }
+  const difTime = elapsedTime - goalTime;
+  function formatDifTime(difTime) {
+    const hours = String(
+      Math.floor(Math.abs(difTime / (1000 * 60 * 60)))
+    ).padStart(2, 0);
+    const minutes = String(
+      Math.floor(Math.abs((difTime / (1000 * 60)) % 60))
+    ).padStart(2, 0);
+    const seconds = String(
+      Math.floor(Math.abs((difTime / 1000) % 60))
+    ).padStart(2, 0);
+    return `${hours}:${minutes}:${seconds}`;
+  }
+  console.log(formatDifTime(difTime));
 
   function formatTime() {
     let hours = Math.floor(elapsedTime / (1000 * 60 * 60));
@@ -166,7 +180,8 @@ function TimerBox() {
           <div className="stat-full-row">
             <span className="session-title">Session Progress</span>
             <span className="session-time">
-              {formatTime()} / {goalTime ? formatGoalTime(goalTime) : "Defoult"}
+              {formatDifTime(difTime)} /{" "}
+              {goalTime ? formatGoalTime(goalTime) : "Defoult"}
             </span>
           </div>
         </div>
