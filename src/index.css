@@ -1,8 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
 /* General reset and layout */
 body {
   margin: 0;
   padding: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Inter", sans-serif;
   background-color: #f5f6fa;
   color: #333;
 }
@@ -378,7 +380,7 @@ h2 {
 }
 .level-info h3 {
   padding: 0.8rem 1.8rem;
-  background-color: #8a91a0;
+  background-color: #a5adbc;
   border-radius: 3.5rem;
 }
 
