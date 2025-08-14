@@ -32,7 +32,7 @@ export default function TimerBoxWithTaskBox() {
           totalHours={farmatTotalTime(totalCodedMs)}
         />
       </div>
-      <div className="task-box">
+      <div>
         <TaskBox />
       </div>
     </div>

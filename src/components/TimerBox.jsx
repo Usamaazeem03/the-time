@@ -185,7 +185,7 @@ export default function TimerBox({
             <div className="label"> Progress</div>
           </div>
           <div
-            className="percentage-label"
+            className="Progress-bar"
             style={{ width: `${Math.floor(progressPercrntage)}%` }}
           ></div>
           <div className="stat-full-row">
