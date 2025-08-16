@@ -1,4 +1,5 @@
 import "./index.css";
+import "./tablet.css";
 
 import Header from "./components/Header";
 

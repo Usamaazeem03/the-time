@@ -128,7 +128,6 @@ export default function TimerBox({
         setDayCount(newDayCount);
         localStorage.setItem("dayCount", newDayCount);
         localStorage.setItem("lastCompletionDate", today);
-        console.log("Day added:", newDayCount);
       } else {
         console.log("Day already counted today.");
       }

@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 export default function TaskBox() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => {
+    const saved = localStorage.getItem("tasks");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [taskInput, setTaskInput] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
   const handleAddTask = (e) => {
     e.preventDefault();
     if (taskInput.trim() === "") return;
@@ -18,6 +25,11 @@ export default function TaskBox() {
       )
     );
   };
+  const completedPart = tasks.filter((task) => task.completed).length;
+  const remainingPart = tasks.length - completedPart;
+  const taskPercentage =
+    tasks.length === 0 ? 0 : (completedPart / tasks.length) * 100;
+
   return (
     <div className="task-box">
       <div className="task-header">
@@ -31,7 +43,7 @@ export default function TaskBox() {
         <label className="task-progress-label">Progres</label>
         <div
           className="Progress-bar"
-          style={{ width: `${Math.floor(80)}%` }}
+          style={{ width: `${Math.floor(taskPercentage)}%` }}
         ></div>
       </div>
       <div className="task-list">
@@ -50,7 +62,7 @@ export default function TaskBox() {
         </form>
         <ul className="task-list">
           {tasks.map((task, index) => (
-            <il className="tasks" key={index}>
+            <li className="tasks" key={index}>
               <input
                 className="checkbox"
                 type="checkbox"
@@ -65,17 +77,16 @@ export default function TaskBox() {
                 {task.text}
               </span>
               <button onClick={() => handleDeleteTask(index)}>🗑️</button>
-            </il>
+            </li>
           ))}
-          {console.log(tasks)}
         </ul>
         <div className="Task-stats">
           <div className="disply-Completed-task">
-            <div className="value">{1}</div>
+            <div className="value">{completedPart}</div>
             <div className="label">Completed</div>
           </div>
           <div className="disply-Remaining-task">
-            <div className="value">{Math.floor(1)}%</div>
+            <div className="value">{remainingPart}</div>
             <div className="label"> Remaining</div>
           </div>
         </div>
