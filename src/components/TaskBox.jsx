@@ -39,13 +39,18 @@ export default function TaskBox() {
           <p>Manage your tasks effectively.</p>
         </div>
       </div>
-      <div className="task-progress-box">
-        <label className="task-progress-label">Progres</label>
-        <div
-          className="Progress-bar"
-          style={{ width: `${Math.floor(taskPercentage)}%` }}
-        ></div>
-      </div>
+      {tasks.length > 0 && (
+        <>
+          <div className="task-progress-box">
+            <label className="task-progress-label">Progres</label>
+            <div
+              className="Progress-bar"
+              style={{ width: `${Math.floor(taskPercentage)}%` }}
+            ></div>
+          </div>
+        </>
+      )}
+
       <div className="task-list">
         <label className="task-label">Add new task</label>
         <form className="add-task" onSubmit={handleAddTask}>
@@ -80,16 +85,20 @@ export default function TaskBox() {
             </li>
           ))}
         </ul>
-        <div className="Task-stats">
-          <div className="disply-Completed-task">
-            <div className="value">{completedPart}</div>
-            <div className="label">Completed</div>
-          </div>
-          <div className="disply-Remaining-task">
-            <div className="value">{remainingPart}</div>
-            <div className="label"> Remaining</div>
-          </div>
-        </div>
+        {tasks.length > 0 && (
+          <>
+            <div className="Task-stats">
+              <div className="disply-Completed-task">
+                <div className="value">{completedPart}</div>
+                <div className="label">Completed</div>
+              </div>
+              <div className="disply-Remaining-task">
+                <div className="value">{remainingPart}</div>
+                <div className="label"> Remaining</div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

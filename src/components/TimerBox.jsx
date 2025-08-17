@@ -40,7 +40,6 @@ export default function TimerBox({
   function startTimer() {
     setIsRunning(true);
     startTimerRef.current = Date.now() - elapsedTime;
-    console.log(startTimerRef.current);
     setGoalCompleted(false);
   }
 

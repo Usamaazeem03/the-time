@@ -4,21 +4,30 @@
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  max-width: 100vw;
   font-family: "Inter", sans-serif;
   background-color: #f5f6fa;
   color: #333;
+  overflow-x: hidden;
 }
 
+.app-container {
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
 /* Header */
 .header {
   background-color: #ffffff;
-  padding: 20px 40px;
+  padding: 20px 0;
   border-bottom: 1px solid #e0e0e0;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .header {
+  width: 100%;
   margin-bottom: 10px;
 }
 .logo {
@@ -112,7 +121,7 @@ footer {
 .Timer-bar {
   display: grid;
   grid-template-columns: 1fr 1fr;
-
+  gap: 10px;
   align-items: center;
   justify-content: space-between;
 }
@@ -404,6 +413,11 @@ h2 {
 .level-info span {
   font-size: 2.4rem;
 }
+@media (max-width: 1673px) {
+  .motivation-box {
+    grid-column: 1 / 3;
+  }
+}
 
 .motivation-header {
   display: flex;
@@ -424,6 +438,7 @@ h2 {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   align-items: center;
   justify-content: center;
+  column-gap: 10px;
 }
 
 .next-milestone {
@@ -555,8 +570,79 @@ input[type="checkbox"] {
   margin: 20px;
   padding: 20px;
 }
-@media (max-width: 890px) {
+@media screen and (min-width: 768px) and (max-width: 1023px) {
   .timer-task-box {
     grid-template-columns: 1fr;
+  }
+  .Timer-clock {
+    width: 230px;
+    height: 230px;
+  }
+  .disply-minutes-box,
+  .disply-Progress-box {
+    width: 10rem;
+    height: 5.5rem;
+  }
+  .progress-box {
+    grid-column: 1 / 3;
+  }
+  .level-box {
+    grid-column: 1 / 3;
+  }
+  .motivation-box {
+    grid-column: 1 / 3;
+  }
+
+  .timer-task-box {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* ===== Mobile Layout (max-width: 767px) ===== */
+@media screen and (max-width: 767px) {
+  .timer-task-box {
+    grid-template-columns: 1fr;
+  }
+  .Timer-bar {
+    display: block;
+    grid-template-columns: 1fr;
+  }
+  .Timer-clock {
+    width: 230px;
+    height: 230px;
+    margin: 15px auto;
+  }
+  .disply-minutes-box,
+  .disply-Progress-box {
+    width: 8rem;
+    height: 5rem;
+  }
+  .progress-box {
+    grid-column: 1 / 3;
+  }
+  .level-box {
+    grid-column: 1 / 3;
+  }
+  .motivation-box {
+    grid-column: 1 / 3;
+  }
+
+  .timer-task-box {
+    margin: 0;
+    padding: 0;
+  }
+  .disply-Completed-task,
+  .disply-Remaining-task {
+    width: 8rem;
+    height: 5rem;
+  }
+}
+@media (max-width: 480px) {
+  .app-container {
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+    padding: 0 10px;
   }
 }
