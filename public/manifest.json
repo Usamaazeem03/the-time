@@ -1,6 +1,6 @@
 {
-  "short_name": "TimeApp",
-  "name": "Time Management App",
+  "short_name": "TheTime",
+  "name": "The Time - Productivity Tracker",
   "icons": [
     {
       "src": "/icons/logo192.png",
