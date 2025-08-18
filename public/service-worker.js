@@ -15,11 +15,11 @@ self.addEventListener("install", (event) => {
 // Activate SW
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) =>
+    caches.keys().then((names) =>
       Promise.all(
-        cacheNames.map((name) => {
+        names.forEach((name) => {
           if (name !== CACHE_NAME) {
-            return caches.delete(name);
+            caches.delete(name);
           }
         })
       )
