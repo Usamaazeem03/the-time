@@ -3,14 +3,18 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 export default function TimerBox({
   dayCount,
   setDayCount,
-  totalCodedMs,
-  setTotalCodedMs,
+
   farmatTotalTime,
 }) {
   const [isRunning, setIsRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const intervalIdRef = useRef(null);
   const startTimerRef = useRef(0);
+  // const [goalTime, setGoalTime] = useState(() => 2 * 60 * 60 * 1000);
+  // const [goalCompleted, setGoalCompleted] = useState(false);
+  const [totalCodedMs, setTotalCodedMs] = useState(() => {
+    return Number(localStorage.getItem("totalCodedMs")) || 0;
+  });
   const [goalTime, setGoalTime] = useState(() => 2 * 60 * 60 * 1000);
   const [goalCompleted, setGoalCompleted] = useState(false);
 
@@ -30,6 +34,7 @@ export default function TimerBox({
   }
   useEffect(() => {
     if (isRunning) {
+      if (intervalIdRef.current) clearInterval(intervalIdRef.current);
       intervalIdRef.current = setInterval(() => {
         setElapsedTime(Date.now() - startTimerRef.current);
       }, 10);
@@ -75,22 +80,25 @@ export default function TimerBox({
 
   function formatGoalTime(ms) {
     if (!ms || isNaN(ms)) return "00:00:00";
-    const hours = String(Math.floor(ms / (1000 * 60 * 60))).padStart(2, 0);
-    const minutes = String(Math.floor((ms / (1000 * 60)) % 60)).padStart(2, 0);
-    const seconds = String(Math.floor((ms / 1000) % 60)).padStart(2, 0);
+    const hours = String(Math.floor(ms / (1000 * 60 * 60))).padStart(2, "0");
+    const minutes = String(Math.floor((ms / (1000 * 60)) % 60)).padStart(
+      2,
+      "0"
+    );
+    const seconds = String(Math.floor((ms / 1000) % 60)).padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
   }
   const difTime = elapsedTime - goalTime;
   function formatDifTime(difTime) {
     const hours = String(
       Math.floor(Math.abs(difTime / (1000 * 60 * 60)))
-    ).padStart(2, 0);
+    ).padStart(2, "0");
     const minutes = String(
       Math.floor(Math.abs((difTime / (1000 * 60)) % 60))
-    ).padStart(2, 0);
+    ).padStart(2, "0");
     const seconds = String(
       Math.floor(Math.abs((difTime / 1000) % 60))
-    ).padStart(2, 0);
+    ).padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
   }
 
@@ -99,24 +107,29 @@ export default function TimerBox({
     let minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
     let seconds = Math.floor((elapsedTime / 1000) % 60);
 
-    hours = String(hours).padStart(2, 0);
-    minutes = String(minutes).padStart(2, 0);
-    seconds = String(seconds).padStart(2, 0);
+    hours = String(hours).padStart(2, "0");
+    minutes = String(minutes).padStart(2, "0");
+    seconds = String(seconds).padStart(2, "0");
 
     return `${hours}:${minutes}:${seconds}`;
   }
-  const addToTotalCodedTime = useCallback(
-    (sessionMs) => {
-      const updatedTotal = totalCodedMs + sessionMs;
-      setTotalCodedMs(updatedTotal);
-      localStorage.setItem("totalCodedMs", updatedTotal);
-    },
-    [totalCodedMs, setTotalCodedMs]
-  );
+  // Use functional update to avoid stale closure and persist inside the updater
+  const addToTotalCodedTime = useCallback((sessionMs) => {
+    setTotalCodedMs((prev) => {
+      const updated = prev + sessionMs;
+      localStorage.setItem("totalCodedMs", String(updated));
+      return updated;
+    });
+  }, []);
 
   useEffect(() => {
-    if (goalTime && elapsedTime >= goalTime) {
+    localStorage.setItem("totalCodedMs", String(totalCodedMs));
+  }, [totalCodedMs]);
+
+  useEffect(() => {
+    if (goalTime && elapsedTime >= goalTime && !goalCompleted) {
       alert("🎉 Congratulations! Goal complete.");
+      addToTotalCodedTime(elapsedTime);
 
       // Day count logic
       const today = new Date().toDateString();
@@ -135,13 +148,20 @@ export default function TimerBox({
       setElapsedTime(0);
       setIsRunning(false);
     }
-  }, [elapsedTime, goalTime, dayCount, setDayCount, goalCompleted]);
+  }, [
+    elapsedTime,
+    goalTime,
+    dayCount,
+    setDayCount,
+    goalCompleted,
+    addToTotalCodedTime,
+  ]);
 
-  useEffect(() => {
-    if (goalCompleted) {
-      addToTotalCodedTime(elapsedTime);
-    }
-  }, [goalCompleted, addToTotalCodedTime, elapsedTime]);
+  // useEffect(() => {
+  //   if (goalCompleted) {
+  //     addToTotalCodedTime(elapsedTime);
+  //   }
+  // }, [goalCompleted, addToTotalCodedTime, elapsedTime]);
 
   return (
     <div className="Timer-box">
