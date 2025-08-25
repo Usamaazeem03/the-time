@@ -9,6 +9,7 @@
 CodeTime is a lightweight React dashboard that helps you structure focused work sessions, track progress, and build streaks. The UI prioritizes clarity, calm, and subtle motion to create an upscale experience.
 
 This repository: https://github.com/Usamaazeem03/the-time
+This live link: https://time-v2.netlify.app/
 
 ---
 
