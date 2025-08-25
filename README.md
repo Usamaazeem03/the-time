@@ -130,7 +130,3 @@ If you'd like, I can now:
 - Create a `src/styles/variables.css` and move variables there 🎨
 
 Tell me one option and I'll implement only that single file next.
-
-# The Time Project
-
-(forced redeploy test)
